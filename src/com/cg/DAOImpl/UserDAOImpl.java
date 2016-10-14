@@ -1,29 +1,31 @@
 package com.cg.DAOImpl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.cg.UserDTO;
 
-public class UserDAOImpl {
+public class UserDAOImpl implements UserDAO{
 
 	@Autowired
-	DataSource datasource = null;
+	private DataSource datasource = null;
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate = null;
 	
 	public UserDAOImpl() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void setDataSource(DataSource dataSource){
-		this.datasource = dataSource;
+	@Autowired
+	public void setDataSource(DataSource datasource) {
+		this.datasource = datasource;
+//		this.jdbcTemplate = new JdbcTemplate(datasource);
+		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(datasource);
 	}
 	
-	public void create(UserDTO user){
+	/*public void create(UserDTO user){
 		Connection conn = null;
 		//PreparedStatement insertStatement = null;
 		int rows=0;
@@ -46,9 +48,18 @@ public class UserDAOImpl {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
-			
-		}
+		}*/
 		
+		
+		//Using NamedJDBCServlet
+	
+	public void create(UserDTO user){
+		BeanPropertySqlParameterSource sqlParameterSource;
+		sqlParameterSource = new BeanPropertySqlParameterSource(user);
+		
+		String insertQuery = "insert into user (username,password,email,birthDate,profession) values (:username,:password,:email,:birthDate,:profession)";
+		
+		namedParameterJdbcTemplate.update(insertQuery, sqlParameterSource);
 	}
+	
 }
