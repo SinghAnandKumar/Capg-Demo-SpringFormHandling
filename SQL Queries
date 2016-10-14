@@ -1,0 +1,5 @@
+create table user(id int(5) primary key auto_increment,username varchar(20), password varchar(20),
+			email varchar(20), birthDate varchar(12), profession varchar(20));
+			
+			create table user(username varchar(20), password varchar(20),
+			email varchar(20), birthDate varchar(50), profession varchar(20));
